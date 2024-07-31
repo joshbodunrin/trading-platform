@@ -37,7 +37,7 @@ void Stock::setPrice() { //gets corr
 
     if(curl) {
             
-        std::string api_key = "4AQKMKCSP9N0EIQA";
+        std::string api_key = "";
         std::string symbol = Stock::getSymbol();
         std::string url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=1min&apikey=" + api_key;
 

@@ -10,8 +10,9 @@ class Stock {
             Stock(const std::string&);
             void setSymbol(const std::string&);
             void setPrice();
-            double getPrice(double);
-            std::string getSymbol() ;
+            double getPrice();
+            std::string getSymbol();
+            void parseData(std::string&);
             
     private:
             double price;

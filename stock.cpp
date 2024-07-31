@@ -21,6 +21,7 @@ double price;
 
 Stock::Stock(const std::string& sym) { //shouldnt be able to initialize stock w/o a name
         this->setSymbol(sym);
+        this->setPrice();
     }
 
 void Stock::setSymbol(const std::string& sym) {
@@ -36,7 +37,7 @@ void Stock::setPrice() { //gets corr
 
     if(curl) {
             
-        std::string api_key = "";
+        std::string api_key = "4AQKMKCSP9N0EIQA";
         std::string symbol = Stock::getSymbol();
         std::string url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=1min&apikey=" + api_key;
 
@@ -86,7 +87,8 @@ void Stock::parseData(std::string& data) {
         double low = std::stod(firstEntry.value()["3. low"].get<std::string>());
         double close = std::stod(firstEntry.value()["4. close"].get<std::string>());
         int volume = std::stod(firstEntry.value()["5. volume"].get<std::string>());
-        std:: cout << "open: " << open << std::endl;
+        price = open;
+        //std:: cout << "open: " << open << std::endl;
     } catch (json::parse_error& e) {
         std::cerr << "JSON parsing error: " << e.what() << std::endl;
     } catch (std::exception& e) {

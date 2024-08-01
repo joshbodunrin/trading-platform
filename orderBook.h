@@ -2,6 +2,7 @@
 #define ORDERBOOK_H
 #include <string.h>
 #include <vector>
+#include <memory>
 #include "order.h"
 
 //makes sense to implement this as a singleton since there should only be one orderbook
@@ -11,7 +12,7 @@ class OrderBook {
         OrderBook& operator=(const OrderBook&) = delete;
 
         static OrderBook* getInstance();
-        void addOrder(Order* order);
+        void addOrder(std::shared_ptr<Order> order);
         void viewOrders();
 
 
@@ -22,7 +23,7 @@ class OrderBook {
         static OrderBook* orderBookPointer;  // maybe make unique pointer
         OrderBook();
         ~OrderBook();
-        std::vector<Order> orders;
+        std::vector<std::shared_ptr<Order>> allOrders;
 
 };
 

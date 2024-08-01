@@ -5,14 +5,15 @@
 
 double quantity;
 double total;
+double orderPrice;
 Stock* stock;
 
 //Order::Order() {}
 
-Order::Order(Stock* stk, double quantity) {
+Order::Order(Stock* stk, double qty, double prc) {
     stock = stk;
-    double price = stock->getPrice();
-    total = price * quantity;
+    quantity = qty;
+    orderPrice = prc;
 }
 
 Stock* Order::getStock() {
@@ -23,8 +24,8 @@ double Order::getQuantity() {
     return quantity;
 }
 
-double Order::getTotal() {
-    return total;
+double Order::getOrderPrice() {
+    return orderPrice;
 }
 
 time_t Order::getTime() {

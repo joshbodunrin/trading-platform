@@ -7,9 +7,9 @@ class Order {
 
     public:
         Order();
-        Order(Stock* stock, double quantity);
+        Order(Stock* stock, double quantity, double orderPrice);
         double getQuantity();
-        double getTotal();
+        double getOrderPrice();
         std::time_t getTime();
         Stock* getStock();
 
@@ -19,7 +19,7 @@ class Order {
 
         Stock* stock;
         double quantity; // buying partial shares
-        double total;
+        double orderPrice;
         std::time_t time;
 
 };

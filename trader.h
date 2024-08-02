@@ -18,13 +18,15 @@ class Trader {
 
         void buy(Stock* stock, double quantity);
         void sell(Stock* stock, double quantity);
-        void createOrder(Stock* stock, double quantity, double orderPrice);
-        void viewHoldings(std::unordered_map<Stock*, int> holdings);
+        void createOrder(std::string stock, double quantity, double orderPrice);
+        void printHoldings();
+        void printOrders();
+        double getBalance();
 
 
     private:
         double balance; // amount in account
-        std::unordered_map<Stock* , int> holdings;
+        std::unordered_map<std::string , int> holdings;
         std::vector<std::shared_ptr<Order>> orders;
         OrderBook* bookPointer;
 

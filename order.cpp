@@ -6,17 +6,17 @@
 double quantity;
 double total;
 double orderPrice;
-Stock* stock;
+std::string stock;
 
 //Order::Order() {}
 
-Order::Order(Stock* stk, double qty, double prc) {
+Order::Order(std::string stk, double qty, double prc) {
     stock = stk;
     quantity = qty;
     orderPrice = prc;
 }
 
-Stock* Order::getStock() {
+std::string Order::getStock() {
     return stock;
 }
 

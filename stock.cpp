@@ -46,7 +46,7 @@ void Stock::setPrice() { //gets corr
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
-        std:: cout << url.c_str() << std:: endl;
+        //std:: cout << url.c_str() << std:: endl;
 
         res = curl_easy_perform(curl);
 
@@ -54,17 +54,31 @@ void Stock::setPrice() { //gets corr
             std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
 
         } else {
-            //std:: cout << "Response data: " << readBuffer << std:: endl;
-            parseData(readBuffer);
+            try {
+                //std::cout<< "Response data: " << readBuffer << std::endl;
+                auto jsonRespone = json::parse(readBuffer);
+                if (jsonRespone.contains("Error Message")) {
+                    std::string errorMessage = jsonRespone["Error Message"];
+                    throw std::runtime_error("API Error: " + errorMessage);
+                }
+                parseData(readBuffer);
+            } catch (const std::exception& e) {
+                std::cerr << "Invalid stock symbol" << std::endl;
+                throw;
+                //e.what();
+            }
 
         }
 
-        curl_easy_cleanup(curl);
+
     }
-        
-        
-        
+
+        curl_easy_cleanup(curl);
 }
+        
+        
+        
+
 
 std::string Stock::getSymbol() {
     return symbol;

@@ -7,17 +7,17 @@ class Order {
 
     public:
         Order();
-        Order(Stock* stock, double quantity, double orderPrice);
+        Order(std::string symbol, double quantity, double orderPrice);
         double getQuantity();
         double getOrderPrice();
         std::time_t getTime();
-        Stock* getStock();
+        std::string getStock();
 
 
 
     private:
 
-        Stock* stock;
+        std::string stock;
         double quantity; // buying partial shares
         double orderPrice;
         std::time_t time;

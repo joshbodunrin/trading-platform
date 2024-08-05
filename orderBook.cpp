@@ -22,6 +22,13 @@ void OrderBook::addOrder(std::shared_ptr<Order> order) {
     allOrders.push_back(order);
 }
 
+void OrderBook::viewOrders() {
+    for (auto& order: allOrders) {
+        std::cout << "Stock: " << order->getStock() << ", Quantity: " << order->getQuantity() << ", Price: " << order->getOrderPrice() << ", Order Type: " << order->getOrderType() << std::endl;
+
+    }
+}
+
 
 
 

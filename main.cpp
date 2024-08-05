@@ -3,8 +3,22 @@
 #include "order.h"
 #include "trader.h"
 #include <cctype>
-
+#include <vector>
+#include <thread>
 #include <iostream>
+
+
+OrderBook* bookPointer = OrderBook::getInstance();
+
+
+
+void executeBuys(Trader& ghostTrader, Trader& trader, Stock& stock, Stock& ghostStock, double quantity, OrderBook* orderBook ) {
+    std::thread ghostThread(&Trader::buy, std::ref(ghostTrader), std::ref(ghostStock), 2.0, bookPointer);
+    std::thread traderThread(&Trader::buy, std::ref(trader), std::ref(stock), quantity, bookPointer);
+
+    ghostThread.join();
+    traderThread.join();
+}
 
 void toUpperCase(std::string& input) { //so all stock symbols the same
     for (char&c : input) {
@@ -12,7 +26,7 @@ void toUpperCase(std::string& input) { //so all stock symbols the same
     }
 }
 
-void optionMenu(Trader* trader) {
+void optionMenu(Trader& trader) {
     char option;
     while(1) {
         std::cout << "Choose Option:" << std:: endl;
@@ -23,6 +37,7 @@ void optionMenu(Trader* trader) {
         std::cout << "5. Exit " << std:: endl;
         std::cout << "6. Buy Stock" << std::endl;
         std::cout << "7. Sell Stock" << std::endl;
+        std::cout << "8. View Global OrderBook" << std::endl;
         std::cin >> option; 
         std:: cout << std::endl;
         switch (option) {
@@ -41,10 +56,13 @@ void optionMenu(Trader* trader) {
             case '5':
                 break;
             case '6':
-                buyStock(trader);
+                buyStock(trader, bookPointer);
                 break;
             case '7':
-                sellStock(trader);
+                sellStock(trader, bookPointer);
+                break;
+            case '8':
+                viewAllOrders(bookPointer);
                 break;
         }
     }
@@ -68,47 +86,81 @@ void lookUpStock() {
     //optionMenu();
 }
 
-void viewBalance(Trader* trader) {
+void viewBalance(Trader& trader) {
     std::cout << std::endl << std::endl;
-    std::cout << "Current Balance: " << trader->getBalance() << std::endl << std::endl;
+    std::cout << "Current Balance: " << trader.getBalance() << std::endl << std::endl;
     //optionMenu();
     
 }
 
-void viewPortfolio(Trader* trader) {
+void viewPortfolio(Trader& trader) {
     std::cout<<std::endl << std::endl;
-    trader->printHoldings();
+    trader.printHoldings();
     std::cout<< std::endl;
 }
 
-void viewOrders(Trader* trader) {
+void viewOrders(Trader& trader) {
     std::cout<<std::endl<<std::endl;
-    trader->printOrders();
+    trader.printOrders();
     std::cout<<std::endl;
 }
 
-void buyStock(Trader* trader) {
+void buyStock(Trader& trader, OrderBook* orderBook) {
     std::string symbol;
     double quantity;
     std::cout << std::endl << std::endl;
     std::cout << "Enter Stock you would like to buy: ";
     std::cin >> symbol;
     try {
-    //toUpperCase(symbol);
+    toUpperCase(symbol);
+    Stock lookUp(symbol);
+    double price = lookUp.getPrice();
+    std::cout << "Current Price: " << price << std::endl;
+    std::cout << "How many shares would you like to buy: ";
+    std::cin >> quantity;
+    Trader ghostTrader = Trader();
+    Stock ghostStock("AAPL");
+    ghostStock.setPrice();
+    std::cout << "here is ghoststock: " << ghostStock.getSymbol() <<std::endl;
+    std::cout << "here is reg stock: " << lookUp.getSymbol() << std::endl;
+
+    executeBuys(ghostTrader, trader, lookUp, ghostStock, quantity, bookPointer);
+//    ghostTrader->buy(&lookUp, quantity, bookPointer);
+//    trader->buy(&lookUp, quantity, bookPointer);
+    } catch(const std::runtime_error& e) {
+        std::cerr << "Try another Symbol " << std::endl;
+        buyStock(trader, bookPointer);
+    }
+
+}
+
+void sellStock(Trader& trader, OrderBook* orderBook) {
+    std::string symbol;
+    double quantity;
+    std::cout << std::endl << std::endl;
+    std::cout << "Enter Stock you would like to sell: ";
+    std::cin >> symbol;
+    try {
+    toUpperCase(symbol);
     Stock lookUp = Stock(symbol);
     double price = lookUp.getPrice();
     std::cout << "Current Price: " << price << std::endl;
     std::cout << "How many shares would you like to buy: ";
     std::cin >> quantity;
-    trader->buy(&lookUp, quantity);
+    trader.sell(lookUp, quantity, bookPointer);
     } catch(const std::runtime_error& e) {
         std::cerr << "Try another Symbol " << std::endl;
-        buyStock(trader);
+        sellStock(trader, bookPointer);
     }
-
 }
 
-void sellStock(Trader* trader) {}
+void viewAllOrders(OrderBook* orderBook) {
+    std::cout << std::endl;
+    std::cout << "Here are all orders in the book: " << std::endl;
+    bookPointer->viewOrders();
+}
+
+
 
 int main() {
 
@@ -118,7 +170,7 @@ int main() {
     Trader mainTrader = Trader();
 
     std::cout << "Welcome to Trading Platform Simulator!" << std::endl << std::endl << std::endl; 
-    optionMenu(&mainTrader);
+    optionMenu(mainTrader);
 
 
 

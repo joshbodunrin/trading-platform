@@ -20,8 +20,8 @@ std::string symbol;
 double price;
 
 Stock::Stock(const std::string& sym) { //shouldnt be able to initialize stock w/o a name
-        this->setSymbol(sym);
-        this->setPrice();
+        setSymbol(sym);
+        setPrice();
     }
 
 void Stock::setSymbol(const std::string& sym) {
@@ -38,7 +38,7 @@ void Stock::setPrice() { //gets corr
     if(curl) {
             
         std::string api_key = "";
-        std::string symbol = Stock::getSymbol();
+        std::string symbol = getSymbol();
         std::string url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=1min&apikey=" + api_key;
 
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());

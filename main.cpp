@@ -74,7 +74,8 @@ void lookUpStock() {
     std::cout << "Enter Symbol you want to see data for: ";
     std::cin >> symbol;
     try {
-    Stock lookUp = Stock(symbol);
+    Stock lookUp(symbol);
+    lookUp.setPrice();
     double price = lookUp.getPrice();
     std::cout << "Current Price: " << price << std::endl;
     } catch(const std::runtime_error& e) {
@@ -113,18 +114,16 @@ void buyStock(Trader& trader, OrderBook* orderBook) {
     std::cin >> symbol;
     try {
     toUpperCase(symbol);
-    Stock lookUp(symbol);
-    double price = lookUp.getPrice();
+    Stock* lookUp = new Stock(symbol);
+    lookUp->setPrice();
+    double price = lookUp->getPrice();
     std::cout << "Current Price: " << price << std::endl;
     std::cout << "How many shares would you like to buy: ";
     std::cin >> quantity;
     Trader ghostTrader = Trader();
-    Stock ghostStock("AAPL");
-    ghostStock.setPrice();
-    std::cout << "here is ghoststock: " << ghostStock.getSymbol() <<std::endl;
-    std::cout << "here is reg stock: " << lookUp.getSymbol() << std::endl;
-
-    executeBuys(ghostTrader, trader, lookUp, ghostStock, quantity, bookPointer);
+    Stock* ghostStock = new Stock("AAPL");
+    ghostStock->setPrice();
+    executeBuys(ghostTrader, trader, *lookUp, *ghostStock, quantity, bookPointer);
 //    ghostTrader->buy(&lookUp, quantity, bookPointer);
 //    trader->buy(&lookUp, quantity, bookPointer);
     } catch(const std::runtime_error& e) {
@@ -142,7 +141,8 @@ void sellStock(Trader& trader, OrderBook* orderBook) {
     std::cin >> symbol;
     try {
     toUpperCase(symbol);
-    Stock lookUp = Stock(symbol);
+    Stock lookUp(symbol);
+    lookUp.setPrice();
     double price = lookUp.getPrice();
     std::cout << "Current Price: " << price << std::endl;
     std::cout << "How many shares would you like to buy: ";
